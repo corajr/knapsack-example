@@ -7,12 +7,16 @@ module Knapsack ( Good(..)
                 , mkKnapsack
                 , getSackContents
                 , stealOptimallyFrom
+                , exponentialStealOptimallyFrom
                 ) where
 
-import Control.Monad (foldM)
 import GHC.TypeLits
 import Data.Proxy (Proxy(Proxy))
-import Data.Maybe (fromMaybe)
+
+import Control.Monad (foldM)
+import Data.Function (on)
+import Data.Maybe (mapMaybe)
+import Data.List (maximumBy, subsequences)
 
 data Good = Good
   { goodWeight :: Integer
@@ -38,11 +42,11 @@ mkKnapsack' = fmap fst . foldM addGood (emptyKnapsack', natVal (Proxy :: Proxy n
           | n >= w = Just (Knapsack (x:goods), n - w)
           | otherwise = Nothing
 
-getSackCapacity :: forall n. (KnownNat n) => Knapsack n -> Integer
-getSackCapacity _ = natVal (Proxy :: Proxy n)
-
 getSackContents :: Knapsack n -> [Good]
 getSackContents (Knapsack xs) = xs
 
-stealOptimallyFrom :: [Good] -> Maybe (Knapsack 4)
+stealOptimallyFrom :: [Good] -> Knapsack 4
 stealOptimallyFrom = undefined
+
+exponentialStealOptimallyFrom :: [Good] -> Knapsack 4
+exponentialStealOptimallyFrom = maximumBy (compare `on` (sum . map goodPrice . getSackContents)) . mapMaybe mkKnapsack . subsequences
