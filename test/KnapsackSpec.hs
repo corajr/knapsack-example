@@ -49,3 +49,5 @@ spec = do
       mkKnapsack [stereo, laptop] `shouldSatisfy` isNothing
     it "maximizes price by weight in stealing" $ do
       Just (stealOptimallyFrom house) `shouldBe` optimal
+    it "gives the same result as an exponential time algorithm" $ property $
+      \xs -> length xs <= 10 ==> stealOptimallyFrom xs === exponentialStealOptimallyFrom xs
