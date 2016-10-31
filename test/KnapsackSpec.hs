@@ -8,7 +8,7 @@ import Knapsack
 
 instance Arbitrary Good where
   arbitrary = do
-    (NonNegative w) <- arbitrary
+    w <- choose (1, 5)
     (NonNegative p) <- arbitrary
     n <- arbitrary
     return $ Good w p n
@@ -50,4 +50,4 @@ spec = do
     it "maximizes price by weight in stealing" $ do
       Just (stealOptimallyFrom house) `shouldBe` optimal
     it "gives the same result as an exponential time algorithm" $ property $
-      \xs -> length xs <= 10 ==> stealOptimallyFrom xs === exponentialStealOptimallyFrom xs
+      \xs -> length xs <= 20 ==> stealOptimallyFrom xs === exponentialStealOptimallyFrom xs
